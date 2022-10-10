@@ -1,0 +1,4 @@
+[core]
+    remote = remote_storage
+['remote "remote_storage"']
+    url = C:\Users\Yagor\Desktop\MIPT\MLE2\dvc_remote
