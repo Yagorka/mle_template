@@ -53,7 +53,7 @@ options {
                 }
             }
 
-        // uuse for multi containers:
+        // use for multi containers:
         //docker exec %containerId% cd app && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m
         //use for single container (with auth):
         //docker run --name mle-template_web_1 cd app && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m
