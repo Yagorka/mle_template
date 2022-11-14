@@ -25,7 +25,7 @@ options {
                 // bat encoding: 'CP1251', script: '''
                 //                                 chcp 1251
                 //                                 cd mle_template && dir'''
-                bat encoding: 'CP1251', script: '''
+                bat encoding: 'UTF-8', script: '''
                                                 chcp 65001
                                                 cd mle_template && dir'''
                 //bat encoding: 'CP1251', script: 'chcp 1251 && cd mle_template && dir'
