@@ -16,7 +16,7 @@ options {
         stage('Clone github repository') {
             steps {
                 cleanWs()
-                bat 'chcp 65001 && git clone -b main https://github.com/Yagorka/mle_template.git'
+                bat 'git clone -b main https://github.com/Yagorka/mle_template.git'
 				}
 			}
 
@@ -39,7 +39,7 @@ options {
                 //withCredentials([usernamePassword(credentialsId: 'mle-template', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]){
                 //bat 'chcp 65001 && echo %DOCKER_REGISTRY_PWD% | docker login -u %DOCKER_REGISTRY_USER% --password-stdin'}
                 //bat 'chcp 65001 && echo %DOCKERHUB_CREDS_PSW% | docker login -u %DOCKERHUB_CREDS_USR% --password-stdin'
-                bat 'chcp 65001 && docker login -u %DOCKERHUB_CREDS_USR% -p %DOCKERHUB_CREDS_PSW%'
+                bat 'docker login -u %DOCKERHUB_CREDS_USR% -p %DOCKERHUB_CREDS_PSW%'
                 }
             }
 
@@ -47,7 +47,7 @@ options {
             steps {
                 script {
                     try {
-                        bat 'chcp 65001 && cd mle_template && docker-compose build'
+                        bat 'cd mle_template && docker-compose build'
                         }
 
                     finally {
@@ -96,14 +96,14 @@ options {
 
         stage('Push'){
             steps{
-                bat 'chcp 65001 && docker push yagorka/mle-template:latest'
+                bat 'docker push yagorka/mle-template:latest'
             }
         }
 	}
 
     post {
         always {
-            bat 'chcp 65001 && docker logout'
+            bat 'docker logout'
         }
     }
 }
