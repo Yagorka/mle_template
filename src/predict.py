@@ -18,8 +18,14 @@ SHOW_LOG = True
 
 
 class Predictor():
+    """
+        Сlass that allows you loads pretrained ML model, tests model with functional, metric, an unit tests and get results.
+    """
 
     def __init__(self) -> None:
+        """
+            Re-defined __init__ method which loads and normalizes data and accepts test parameters of the model and type of testing
+        """
         logger = Logger(SHOW_LOG)
         self.config = configparser.ConfigParser()
         self.log = logger.get_logger(__name__)
@@ -57,6 +63,9 @@ class Predictor():
         self.log.info("Predictor is ready")
 
     def predict(self) -> bool:
+        """
+            Class method which tests the model in a functional style or unit depending on the parameters (from object) and outputs the result in experiments 
+        """
         args = self.parser.parse_args()
         try:
             classifier = pickle.load(

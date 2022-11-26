@@ -1,0 +1,10 @@
+model: SVM
+model params:
+  c: '1.5'
+  kernel: rbf
+  random_state: '0'
+  path: C:\Users\Yagor\Desktop\MIPT\MLE2\first_project\mle_template\experiments\svm.sav
+tests: func
+score: '0.0'
+X_test path: C:\Users\Yagor\Desktop\MIPT\MLE2\first_project\mle_template\data\Test_Sonar_X.csv
+y_test path: C:\Users\Yagor\Desktop\MIPT\MLE2\first_project\mle_template\data\Test_Sonar_y.csv

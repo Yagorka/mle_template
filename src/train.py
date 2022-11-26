@@ -19,8 +19,14 @@ SHOW_LOG = True
 
 
 class MultiModel():
+    """
+        Сlass that allows you to train models, save them for future use, output metrics and register the paths to them and the parameters used in the config.ini file.
+    """
 
     def __init__(self) -> None:
+        """
+            Re-defined __init__ method which stores the required file names for the test and train and for models names
+        """
         logger = Logger(SHOW_LOG)
         self.config = configparser.ConfigParser()
         self.log = logger.get_logger(__name__)
@@ -46,7 +52,16 @@ class MultiModel():
         self.d_tree_path = os.path.join(self.project_path, "d_tree.sav")
         self.log.info("MultiModel is ready")
 
-    def log_reg(self, predict=False) -> bool:
+    def log_reg(self, predict: bool=False) -> bool:
+        """
+            Class method which splits trains the model LogisticRegression, saves it and tests it with the output of the accuracy metric
+
+        Args:
+            predict (bool): False if train (default: False)
+
+        Returns:
+            bool: True if file with model is savedand False if file don't exist.
+        """
         classifier = LogisticRegression()
         try:
             classifier.fit(self.X_train, self.y_train)
@@ -59,7 +74,19 @@ class MultiModel():
         params = {'path': self.log_reg_path}
         return self.save_model(classifier, self.log_reg_path, "LOG_REG", params)
 
-    def rand_forest(self, use_config: bool, n_trees=100, criterion="entropy", predict=False) -> bool:
+    def rand_forest(self, use_config: bool, n_trees: int=100, criterion="entropy", predict=False) -> bool:
+        """
+            Class method which splits trains the model RandomForestClassifier, saves it and tests it with the output of the accuracy metric
+
+        Args:
+            predict (bool): False if train (default: False)
+            use_config (bool) : True if uses parametres from config.ini
+            n_trees (int) : numbers tree in RandomForestClassifier
+            criterion (str) : criterion for optimizer (default: entropy)
+
+        Returns:
+            bool: True if file with model is savedand False if file don't exist.
+        """
         if use_config:
             try:
                 classifier = RandomForestClassifier(
@@ -85,6 +112,19 @@ class MultiModel():
         return self.save_model(classifier, self.rand_forest_path, "RAND_FOREST", params)
 
     def knn(self, use_config: bool, n_neighbors=5, metric="minkowski", p=2, predict=False) -> bool:
+        """
+            Class method which splits trains the model KNeighborsClassifier, saves it and tests it with the output of the accuracy metric
+
+        Args:
+            predict (bool): False if train (default: False)
+            use_config (bool) : True if uses parametres from config.ini
+            n_neighbors (int): numbers neighbors in KNeighborsClassifier
+            metric (str): metric for KNeighborsClassifier (default: minkowski)
+            p (int): p for KNeighborsClassifier (default: 2)
+
+        Returns:
+            bool: True if file with model is savedand False if file don't exist.
+        """
         if use_config:
             try:
                 classifier = KNeighborsClassifier(n_neighbors=self.config.getint(
@@ -111,6 +151,19 @@ class MultiModel():
         return self.save_model(classifier, self.knn_path, "KNN", params)
 
     def svm(self, use_config: bool, C=1.5, kernel='rbf', random_state=0, predict=False) -> bool:
+        """
+            Class method which splits trains the model C-Support Vector Classification (SVC), saves it and tests it with the output of the accuracy metric
+
+        Args:
+            predict (bool): False if train (default: False)
+            use_config (bool) : True if uses parametres from config.ini
+            random_state (int): random_state for SVC (default: 0)
+            kernel (str): kernel for SVC (default: rbf)
+            C (float): p for SVC (default: 2)
+
+        Returns:
+            bool: True if file with model is savedand False if file don't exist.
+        """
         if use_config:
             try:
                 classifier = SVC(kernel=self.config["SVM"]["kernel"], random_state=self.config.getint(
@@ -136,6 +189,15 @@ class MultiModel():
         return self.save_model(classifier, self.svm_path, "SVM", params)
 
     def gnb(self, predict=False) -> bool:
+        """
+            Class method which splits trains the model GaussianNB, saves it and tests it with the output of the accuracy metric
+
+        Args:
+            predict (bool): False if train (default: False)
+
+        Returns:
+            bool: True if file with model is savedand False if file don't exist.
+        """
         classifier = GaussianNB()
         try:
             classifier.fit(self.X_train, self.y_train)
@@ -149,9 +211,20 @@ class MultiModel():
         return self.save_model(classifier, self.gnb_path, "GNB", params)
 
     def d_tree(self, use_config: bool, criterion="entropy", predict=False) -> bool:
+        """
+            Class method which splits trains the model DecisionTreeClassifier, saves it and tests it with the output of the accuracy metric
+
+        Args:
+            predict (bool): False if train (default: False)
+            use_config (bool) : True if uses parametres from config.ini (default: False)
+            criterion (str) : criterion for DecisionTreeClassifier (default: entropy)
+
+        Returns:
+            bool: True if file with model is savedand False if file don't exist.
+        """
         if use_config:
             try:
-                classifier = RandomForestClassifier(
+                classifier = DecisionTreeClassifier(
                     criterion=self.config["D_TREE"]["criterion"])
             except KeyError:
                 self.log.error(traceback.format_exc())

@@ -12,8 +12,14 @@ SHOW_LOG = True
 
 
 class DataMaker():
+    """
+        Сlass that allows you to load a dataset (sonar.all-data.csv) split it into a test and a train and save it in this form.
+    """
 
     def __init__(self) -> None:
+        """
+            Re-defined __init__ method which stores the required file names for the test and train
+        """
         logger = Logger(SHOW_LOG)
         self.config = configparser.ConfigParser()
         self.log = logger.get_logger(__name__)
@@ -28,6 +34,12 @@ class DataMaker():
         self.log.info("DataMaker is ready")
 
     def get_data(self) -> bool:
+        """
+            Class method which splits the dataset into data and labels saves them and writes logs with paths to them to a file
+
+        Returns:
+            bool: True if files the files are saved and exist and False if files don't exist.
+        """
         dataset = pd.read_csv(self.data_path)
         X = pd.DataFrame(dataset.iloc[:,0:60].values)
         y = pd.DataFrame(dataset.iloc[:,60:].values)
@@ -43,6 +55,15 @@ class DataMaker():
             return False
 
     def split_data(self, test_size=TEST_SIZE) -> set:
+        """
+            Class method which splits the dataset data and labels into train and test data saves them and writes logs with paths to them to a file
+
+        Args:
+            test_size (float): pecent data for test (0. - without test data, 0.3 - 30% data, and etc.)
+
+        Returns:
+            bool: True if files the files are saved and exist and False if files don't exist.
+        """
         self.get_data()
         try:
             X = pd.read_csv(self.X_path, index_col=0)
