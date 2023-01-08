@@ -29,15 +29,16 @@ class Predictor():
         logger = Logger(SHOW_LOG)
         self.config = configparser.ConfigParser()
         self.log = logger.get_logger(__name__)
-        self.config.read("config.ini")
+        self.config_path = os.path.join(os.getcwd(), 'config.ini')
+        self.config.read(self.config_path)
         self.parser = argparse.ArgumentParser(description="Predictor")
         self.parser.add_argument("-m",
                                  "--model",
                                  type=str,
                                  help="Select model",
                                  required=True,
-                                 default="LOG_REG",
-                                 const="LOG_REG",
+                                 default="SVM",
+                                 const="SVM",
                                  nargs="?",
                                  choices=["LOG_REG", "RAND_FOREST", "KNN", "GNB", "SVM", "D_TREE"])
         self.parser.add_argument("-t",
@@ -49,6 +50,7 @@ class Predictor():
                                  const="smoke",
                                  nargs="?",
                                  choices=["smoke", "func"])
+        print(self.config)                         
         self.X_train = pd.read_csv(
             self.config["SPLIT_DATA"]["X_train"], index_col=0)
         self.y_train = pd.read_csv(
@@ -60,6 +62,12 @@ class Predictor():
         self.sc = StandardScaler()
         self.X_train = self.sc.fit_transform(self.X_train)
         self.X_test = self.sc.transform(self.X_test)
+        try:
+            self.classifier_web = pickle.load(
+                open(self.config["SVM"]["path"], "rb"))
+        except FileNotFoundError:
+            self.log.error(traceback.format_exc())
+            sys.exit(1)
         self.log.info("Predictor is ready")
 
     def predict(self) -> bool:
@@ -116,6 +124,11 @@ class Predictor():
                     shutil.copy(os.path.join(os.getcwd(), "logfile.log"), os.path.join(exp_dir,"exp_logfile.log"))
                     shutil.copy(self.config[args.model]["path"], os.path.join(exp_dir,f'exp_{args.model}.sav'))
         return True
+
+    def predict_web(self, X: list):
+        X_normilize = self.sc.transform(X)
+        return self.classifier_web.predict(X_normilize)
+
 
 
 if __name__ == "__main__":
