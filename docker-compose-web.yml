@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+   app:
+       build: .
+       command: bash -c "python src/preprocess.py && python src/train.py && cat config.ini && flask run" 
+       ports:
+           - 5000:5000
+       image: yagorka/mle-template-app:latest
+       environment:
+           FLASK_APP: src/app.py
+           FLASK_RUN_HOST: 0.0.0.0
+   nginx:
+       image: nginx:latest
+       volumes:
+           - ./nginx.conf:/etc/nginx/nginx.conf:ro
+       depends_on:
+           - app
+       ports:
+           - 80:80
+            
+

@@ -30,7 +30,9 @@ class MultiModel():
         logger = Logger(SHOW_LOG)
         self.config = configparser.ConfigParser()
         self.log = logger.get_logger(__name__)
-        self.config.read("config.ini")
+        self.config_path = os.path.join(os.getcwd(), 'config.ini')
+        self.log.info(f"self.config_path: {self.config_path}")
+        self.config.read(self.config_path)
         self.X_train = pd.read_csv(
             self.config["SPLIT_DATA"]["X_train"], index_col=0)
         self.y_train = pd.read_csv(
@@ -246,8 +248,9 @@ class MultiModel():
 
     def save_model(self, classifier, path: str, name: str, params: dict) -> bool:
         self.config[name] = params
-        os.remove('config.ini')
-        with open('config.ini', 'w') as configfile:
+        self.log.info(f'{params} in {name} is saved')
+        os.remove(self.config_path)
+        with open(self.config_path, 'w') as configfile:
             self.config.write(configfile)
         pickle.dump(classifier, open(path, 'wb'))
         self.log.info(f'{path} is saved')
